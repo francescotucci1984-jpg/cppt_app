@@ -125,6 +125,7 @@
   .btn-secondary{background:var(--surface-2); color:var(--cream); border:1px solid var(--line);}
   .btn-remove{background:var(--red); color:var(--cream); width:36px; height:36px; border-radius:8px; font-size:16px; line-height:1;}
   .btn-add{background:transparent; border:1px dashed var(--yellow); color:var(--yellow);}
+  .form-actions{display:flex; gap:12px; flex-wrap:wrap;}
 
   .msg{padding:12px 14px; border-radius:8px; font-size:14px; margin-bottom:18px; font-weight:600;}
   .msg-success{background:rgba(76,175,119,0.15); color:var(--green); border:1px solid var(--green);}
@@ -407,6 +408,14 @@ function renderRegistrati(message) {
         </div>
 
         <div class="field">
+          <label for="numeroComponenti">Numero Componenti *</label>
+          <select id="numeroComponenti" required>
+            <option value="">— Seleziona —</option>
+            ${Array.from({ length: 30 }, (_, i) => i + 1).map(n => `<option value="${n}">${n}</option>`).join("")}
+          </select>
+        </div>
+
+        <div class="field">
           <label>Composizione della Band *</label>
           <div class="instrument-list-header">Strumento — n. componenti</div>
           <div id="instrumentRowsWrap"></div>
@@ -436,7 +445,10 @@ function renderRegistrati(message) {
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Registra la Band</button>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Registra la Band</button>
+          <button type="button" class="btn btn-secondary" id="cancelBandBtn">Annulla</button>
+        </div>
       </form>
     </div>
   `;
@@ -447,6 +459,10 @@ function renderRegistrati(message) {
     renderInstrumentRows();
   });
   document.getElementById("bandForm").addEventListener("submit", onSubmitBand);
+  document.getElementById("cancelBandBtn").addEventListener("click", () => {
+    instrumentRows = [];
+    location.hash = "#/home";
+  });
 }
 
 function renderInstrumentRows() {
@@ -479,6 +495,7 @@ function onSubmitBand(e) {
   e.preventDefault();
   const nomeBand = document.getElementById("nomeBand").value.trim();
   const genere = document.getElementById("genere").value;
+  const numeroComponenti = document.getElementById("numeroComponenti").value;
   const linkVideo = document.getElementById("linkVideo").value.trim();
   const primaVolta = document.getElementById("primaVolta").checked;
   const referenteNome = document.getElementById("referenteNome").value.trim();
@@ -486,7 +503,7 @@ function onSubmitBand(e) {
 
   const validRows = instrumentRows.filter(r => r.strumento);
 
-  if (!nomeBand || !genere || !referenteNome || !referenteTelefono) {
+  if (!nomeBand || !genere || !numeroComponenti || !referenteNome || !referenteTelefono) {
     renderRegistrati({ type: "msg-error", text: "Compila tutti i campi obbligatori (*)." });
     return;
   }
@@ -498,6 +515,7 @@ function onSubmitBand(e) {
   const payload = {
     action: "createBand",
     nomeBand, genere,
+    numeroComponenti: Number(numeroComponenti),
     composizione: JSON.stringify(validRows),
     linkVideo,
     primaVolta,
