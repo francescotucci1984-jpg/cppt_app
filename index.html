@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPPT — Suona al Circolo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171F;
+    --surface:#1E2330;
+    --surface-2:#262C3D;
+    --line:#333B4F;
+    --cream:#F5F1E6;
+    --muted:#9AA0AE;
+    --yellow:#F2B705;
+    --red:#D94F30;
+    --green:#4CAF77;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:0.03em;
+    font-weight:400;
+    line-height:1.05;
+  }
+  a{color:var(--yellow);}
+
+  /* ---- NAV ---- */
+  .topbar{
+    background:linear-gradient(180deg,#181C26,#14171F);
+    border-bottom:3px solid var(--yellow);
+    position:sticky; top:0; z-index:20;
+  }
+  .topbar-inner{
+    max-width:1100px; margin:0 auto; padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand{
+    font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:0.06em;
+    color:var(--cream); text-decoration:none; display:flex; align-items:baseline; gap:8px;
+  }
+  .brand span{color:var(--yellow);}
+  nav.tabs{display:flex; gap:4px; flex-wrap:wrap;}
+  nav.tabs a{
+    text-decoration:none; color:var(--muted); font-weight:600; font-size:14px;
+    padding:8px 12px; border-radius:8px; transition:background .15s, color .15s;
+    text-transform:uppercase; letter-spacing:0.04em;
+  }
+  nav.tabs a:hover{color:var(--cream); background:var(--surface-2);}
+  nav.tabs a.active{color:var(--ink); background:var(--yellow);}
+
+  /* ---- LAYOUT ---- */
+  main{max-width:1100px; margin:0 auto; padding:32px 20px 80px;}
+  .hero{padding:40px 0 24px; border-bottom:1px dashed var(--line); margin-bottom:32px;}
+  .hero h1{font-size:56px; margin:0 0 8px;}
+  .hero p{color:var(--muted); font-size:17px; max-width:640px; margin:0;}
+
+  .grid-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:28px;}
+  .nav-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; text-decoration:none; color:var(--cream); transition:transform .15s, border-color .15s;
+    display:block;
+  }
+  .nav-card:hover{transform:translateY(-3px); border-color:var(--yellow);}
+  .nav-card .eyebrow{color:var(--yellow); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;}
+  .nav-card h3{font-size:26px; margin:6px 0 6px;}
+  .nav-card p{color:var(--muted); font-size:14px; margin:0;}
+
+  .section-title{font-size:34px; margin:0 0 4px;}
+  .section-sub{color:var(--muted); margin:0 0 28px; font-size:15px;}
+
+  /* ---- FORM ---- */
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px;}
+  .field{margin-bottom:20px;}
+  .field label{display:block; font-weight:600; font-size:14px; margin-bottom:6px;}
+  .field .hint{color:var(--muted); font-size:12px; margin-top:4px;}
+  input[type=text], input[type=tel], input[type=url], input[type=number], select, textarea{
+    width:100%; background:var(--ink); border:1px solid var(--line); color:var(--cream);
+    padding:10px 12px; border-radius:8px; font-family:inherit; font-size:14px;
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--yellow); outline-offset:1px; border-color:var(--yellow);}
+  .row-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .checkbox-field{display:flex; align-items:center; gap:10px;}
+  .checkbox-field input{width:auto;}
+
+  .instrument-row{display:grid; grid-template-columns:1fr 100px 40px; gap:10px; margin-bottom:10px; align-items:center;}
+  .instrument-list-header{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;}
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-weight:700; font-size:14px;
+    padding:10px 18px; border-radius:8px; transition:transform .1s, filter .15s;
+    text-transform:uppercase; letter-spacing:0.03em;
+  }
+  .btn:hover{filter:brightness(1.1);}
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--yellow); color:var(--ink);}
+  .btn-secondary{background:var(--surface-2); color:var(--cream); border:1px solid var(--line);}
+  .btn-remove{background:var(--red); color:var(--cream); width:36px; height:36px; border-radius:8px; font-size:16px; line-height:1;}
+  .btn-add{background:transparent; border:1px dashed var(--yellow); color:var(--yellow);}
+
+  .msg{padding:12px 14px; border-radius:8px; font-size:14px; margin-bottom:18px; font-weight:600;}
+  .msg-success{background:rgba(76,175,119,0.15); color:var(--green); border:1px solid var(--green);}
+  .msg-error{background:rgba(217,79,48,0.15); color:#ff8a6b; border:1px solid var(--red);}
+  .msg-info{background:rgba(242,183,5,0.1); color:var(--yellow); border:1px solid var(--yellow);}
+
+  /* ---- TICKETS (date cards for Suona al CPPT) ---- */
+  .ticket-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:18px 0 26px;}
+  .ticket{
+    position:relative; background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
+    padding:16px 16px 16px 20px; cursor:pointer; transition:border-color .15s, background .15s;
+    border-left:4px solid var(--line);
+  }
+  .ticket.checked{border-left-color:var(--yellow); background:#2C2A18;}
+  .ticket .ticket-date{font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.03em;}
+  .ticket .ticket-note{color:var(--muted); font-size:13px; margin-top:2px;}
+  .ticket input{position:absolute; top:14px; right:14px; width:18px; height:18px; accent-color:var(--yellow);}
+
+  /* ---- ORGANIZER MATRIX ---- */
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius);}
+  table.matrix{border-collapse:collapse; width:100%; min-width:520px; font-size:13px;}
+  table.matrix th, table.matrix td{padding:10px 12px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap;}
+  table.matrix th{background:var(--surface-2); font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.03em; font-weight:400;}
+  table.matrix td:first-child, table.matrix th:first-child{text-align:left; position:sticky; left:0; background:var(--surface); font-weight:600;}
+  .tick{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--yellow); color:var(--ink); font-weight:800;}
+
+  /* ---- INFO ---- */
+  .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .info-grid .card h3{font-size:24px; color:var(--yellow); margin-top:0;}
+  .info-grid ul{margin:0; padding-left:20px; color:var(--cream);}
+  .info-grid li{margin-bottom:8px;}
+
+  @media (max-width:720px){
+    .hero h1{font-size:40px;}
+    .row-2, .info-grid{grid-template-columns:1fr;}
+    nav.tabs a{font-size:12px; padding:6px 8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="#/home" class="brand">CPPT<span>•</span>Circolo</a>
+    <nav class="tabs" id="navTabs">
+      <a href="#/home" data-route="home">Home</a>
+      <a href="#/registrati" data-route="registrati">Registra la tua Band</a>
+      <a href="#/suona" data-route="suona">Suona al CPPT</a>
+      <a href="#/organizer" data-route="organizer">Organizer</a>
+      <a href="#/info" data-route="info">Info</a>
+    </nav>
+  </div>
+</div>
+
+<main id="app">
+  <p style="color:var(--muted)">Caricamento…</p>
+</main>
+
+<script>
+/* =========================================================
+   CONFIGURAZIONE
+   ========================================================= */
+// Incolla qui l'URL della Web App di Google Apps Script (.../exec)
+const CONFIG = {
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbxhVIDSBYaaWfdPREsFdyGEDkqrT4edWsEYlpgsHRvOA1E0Yh-ZzF4nRVKN0juPL4YC3g/exec"
+};
+
+/* =========================================================
+   DATI STATICI: generi musicali e strumenti
+   ========================================================= */
+const GENRES = [
+  { cat: "Rock", items: ["Rock", "Hard Rock", "Punk Rock", "Rock Alternativo", "Progressive Rock", "Indie Rock", "Grunge", "Rock'n'Roll", "Rockabilly"] },
+  { cat: "Metal", items: ["Heavy Metal", "Thrash Metal", "Death Metal", "Black Metal", "Doom Metal", "Metalcore", "Nu Metal", "Power Metal"] },
+  { cat: "Punk / Hardcore", items: ["Punk", "Hardcore Punk", "Post-Punk", "Ska Punk"] },
+  { cat: "Pop", items: ["Pop", "Pop Rock", "Indie Pop", "Synth Pop", "Dance Pop"] },
+  { cat: "Elettronica", items: ["House", "Techno", "Drum'n'Bass", "Dubstep", "Trance", "Ambient", "EDM", "Downtempo"] },
+  { cat: "Hip Hop / Urban", items: ["Hip Hop", "Rap", "Trap", "R&B", "Soul", "Funk"] },
+  { cat: "Jazz / Blues", items: ["Jazz", "Swing", "Blues", "Boogie Woogie", "Fusion"] },
+  { cat: "Cantautorato / Folk", items: ["Cantautorato", "Folk", "Folk Rock", "Singer-Songwriter", "Musica Popolare/Tradizionale"] },
+  { cat: "Reggae / Ska", items: ["Reggae", "Ska", "Dub", "Dancehall"] },
+  { cat: "Classica / Strumentale", items: ["Classica", "Musica da Camera", "Colonne Sonore / Strumentale"] },
+  { cat: "World Music", items: ["World Music", "Musica Etnica", "Latin / Salsa / Cumbia"] },
+  { cat: "Sperimentale / Altro", items: ["Sperimentale", "Noise", "Cover Band", "Altro (specificare nei link/note)"] }
+];
+
+const INSTRUMENTS = [
+  { cat: "Voce", items: ["Voce", "Cori"] },
+  { cat: "Chitarre e Bassi", items: ["Chitarra Acustica", "Chitarra Elettrica", "Chitarra Classica", "Basso Elettrico", "Contrabbasso", "Ukulele", "Banjo", "Mandolino"] },
+  { cat: "Archi", items: ["Violino", "Viola", "Violoncello"] },
+  { cat: "Tastiere e Ance Libere", items: ["Pianoforte", "Tastiera / Synth", "Organo", "Fisarmonica"] },
+  { cat: "Fiati - Legni", items: ["Flauto Traverso", "Clarinetto", "Sax Soprano", "Sax Alto", "Sax Tenore", "Sax Baritono", "Oboe", "Fagotto"] },
+  { cat: "Fiati - Ottoni", items: ["Tromba", "Trombone", "Corno Francese", "Tuba", "Flicorno"] },
+  { cat: "Percussioni", items: ["Batteria", "Cajon", "Congas", "Bongos", "Djembe", "Percussioni Varie"] },
+  { cat: "Elettronica / DJ", items: ["DJ Set / Controller", "Laptop / Produzione", "Drum Machine", "Sampler"] },
+  { cat: "Altro", items: ["Armonica a Bocca", "Theremin", "Altro (specificare)"] }
+];
+
+/* =========================================================
+   STATO
+   ========================================================= */
+let STATE = { bands: [], dates: [], signups: [], loaded: false };
+let instrumentRows = []; // per il form di registrazione: [{strumento, numero}]
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+function escapeHTML(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function buildOptGroups(groups, selectedValue) {
+  let html = '<option value="">— Seleziona —</option>';
+  groups.forEach(g => {
+    html += `<optgroup label="${escapeHTML(g.cat)}">`;
+    g.items.forEach(item => {
+      const sel = item === selectedValue ? "selected" : "";
+      html += `<option value="${escapeHTML(item)}" ${sel}>${escapeHTML(item)}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  return html;
+}
+
+function formatDataLabel(dataStr) {
+  // prova a interpretare come data reale per una label più leggibile, altrimenti mostra il valore grezzo
+  const d = new Date(dataStr);
+  if (!isNaN(d.getTime()) && /^\d{4}-\d{2}-\d{2}/.test(String(dataStr))) {
+    const opts = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+    return d.toLocaleDateString('it-IT', opts);
+  }
+  return dataStr;
+}
+
+/* =========================================================
+   FETCH / API
+   ========================================================= */
+async function fetchAll() {
+  const res = await fetch(CONFIG.WEB_APP_URL);
+  const data = await res.json();
+  STATE.bands = data.bands || [];
+  STATE.dates = data.dates || [];
+  STATE.signups = data.signups || [];
+  STATE.loaded = true;
+}
+
+function postAction(payload) {
+  return fetch(CONFIG.WEB_APP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(payload)
+  });
+}
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+const routes = {
+  home: renderHome,
+  registrati: renderRegistrati,
+  suona: renderSuona,
+  organizer: renderOrganizer,
+  info: renderInfo
+};
+
+function currentRoute() {
+  const hash = location.hash.replace(/^#\//, "");
+  return routes[hash] ? hash : "home";
+}
+
+function setActiveTab(route) {
+  document.querySelectorAll("#navTabs a").forEach(a => {
+    a.classList.toggle("active", a.dataset.route === route);
+  });
+}
+
+async function render() {
+  const route = currentRoute();
+  setActiveTab(route);
+  const app = document.getElementById("app");
+  app.innerHTML = '<p style="color:var(--muted)">Caricamento…</p>';
+  try {
+    await fetchAll();
+  } catch (err) {
+    app.innerHTML = `<div class="msg msg-error">Impossibile contattare il backend. Controlla che WEB_APP_URL sia configurato correttamente in index.html.</div>`;
+    return;
+  }
+  routes[route]();
+}
+
+window.addEventListener("hashchange", render);
+window.addEventListener("load", () => {
+  if (!location.hash) location.hash = "#/home";
+  render();
+});
+
+/* =========================================================
+   VIEW: HOME
+   ========================================================= */
+function renderHome() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="hero">
+      <h1>Suona al CPPT</h1>
+      <p>La piattaforma del circolo per gestire l'adesione delle band alle serate di concerto: registra la tua band, dai la disponibilità per le date in programma, e guarda il quadro generale delle serate.</p>
+    </div>
+    <div class="grid-cards">
+      <a class="nav-card" href="#/registrati">
+        <div class="eyebrow">Anagrafica</div>
+        <h3>Registra la tua Band</h3>
+        <p>Iscrivi la tua band con genere, formazione e riferimenti.</p>
+      </a>
+      <a class="nav-card" href="#/suona">
+        <div class="eyebrow">Adesioni</div>
+        <h3>Suona al CPPT</h3>
+        <p>Segna la tua band sulle date di concerto disponibili.</p>
+      </a>
+      <a class="nav-card" href="#/organizer">
+        <div class="eyebrow">Quadro generale</div>
+        <h3>Organizer</h3>
+        <p>Chi suona quando: la matrice band × date.</p>
+      </a>
+      <a class="nav-card" href="#/info">
+        <div class="eyebrow">Da sapere</div>
+        <h3>Informazioni</h3>
+        <p>Iniziativa, orari, logistica e strumentazione.</p>
+      </a>
+    </div>
+  `;
+}
+
+/* =========================================================
+   VIEW: REGISTRATI
+   ========================================================= */
+function renderRegistrati(message) {
+  const app = document.getElementById("app");
+  instrumentRows = instrumentRows.length ? instrumentRows : [];
+
+  app.innerHTML = `
+    <h2 class="section-title">Registra la tua Band</h2>
+    <p class="section-sub">Compila l'anagrafica una sola volta: potrai poi selezionare la tua band nella sezione "Suona al CPPT".</p>
+    ${message ? `<div class="msg ${message.type}">${message.text}</div>` : ""}
+    <div class="card">
+      <form id="bandForm">
+        <div class="field">
+          <label for="nomeBand">Nome della Band *</label>
+          <input type="text" id="nomeBand" required>
+        </div>
+
+        <div class="field">
+          <label for="genere">Genere Musicale *</label>
+          <select id="genere" required>${buildOptGroups(GENRES)}</select>
+        </div>
+
+        <div class="field">
+          <label>Composizione della Band *</label>
+          <div class="instrument-list-header">Strumento — n. componenti</div>
+          <div id="instrumentRowsWrap"></div>
+          <button type="button" class="btn btn-add" id="addInstrumentBtn">+ Aggiungi strumento</button>
+          <div class="hint" id="instrumentHint"></div>
+        </div>
+
+        <div class="field">
+          <label for="linkVideo">Link Registrazioni / Video</label>
+          <input type="url" id="linkVideo" placeholder="https://...">
+          <div class="hint">Link a YouTube, Bandcamp, Instagram, ecc. (facoltativo)</div>
+        </div>
+
+        <div class="field checkbox-field">
+          <input type="checkbox" id="primaVolta">
+          <label for="primaVolta" style="margin:0;">Prima Volta al CPPT</label>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="referenteNome">Nome e Cognome Referente Band *</label>
+            <input type="text" id="referenteNome" required>
+          </div>
+          <div class="field">
+            <label for="referenteTelefono">Numero di Telefono Referente *</label>
+            <input type="tel" id="referenteTelefono" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registra la Band</button>
+      </form>
+    </div>
+  `;
+
+  renderInstrumentRows();
+  document.getElementById("addInstrumentBtn").addEventListener("click", () => {
+    instrumentRows.push({ strumento: "", numero: 1 });
+    renderInstrumentRows();
+  });
+  document.getElementById("bandForm").addEventListener("submit", onSubmitBand);
+}
+
+function renderInstrumentRows() {
+  const wrap = document.getElementById("instrumentRowsWrap");
+  if (!wrap) return;
+  wrap.innerHTML = instrumentRows.map((row, idx) => `
+    <div class="instrument-row" data-idx="${idx}">
+      <select class="instr-select">${buildOptGroups(INSTRUMENTS, row.strumento)}</select>
+      <input type="number" class="instr-numero" min="1" value="${row.numero}">
+      <button type="button" class="btn btn-remove instr-remove" title="Rimuovi">×</button>
+    </div>
+  `).join("") || `<div class="hint">Nessuno strumento aggiunto. Usa "+ Aggiungi strumento".</div>`;
+
+  wrap.querySelectorAll(".instrument-row").forEach(rowEl => {
+    const idx = Number(rowEl.dataset.idx);
+    rowEl.querySelector(".instr-select").addEventListener("change", e => {
+      instrumentRows[idx].strumento = e.target.value;
+    });
+    rowEl.querySelector(".instr-numero").addEventListener("input", e => {
+      instrumentRows[idx].numero = Number(e.target.value) || 1;
+    });
+    rowEl.querySelector(".instr-remove").addEventListener("click", () => {
+      instrumentRows.splice(idx, 1);
+      renderInstrumentRows();
+    });
+  });
+}
+
+function onSubmitBand(e) {
+  e.preventDefault();
+  const nomeBand = document.getElementById("nomeBand").value.trim();
+  const genere = document.getElementById("genere").value;
+  const linkVideo = document.getElementById("linkVideo").value.trim();
+  const primaVolta = document.getElementById("primaVolta").checked;
+  const referenteNome = document.getElementById("referenteNome").value.trim();
+  const referenteTelefono = document.getElementById("referenteTelefono").value.trim();
+
+  const validRows = instrumentRows.filter(r => r.strumento);
+
+  if (!nomeBand || !genere || !referenteNome || !referenteTelefono) {
+    renderRegistrati({ type: "msg-error", text: "Compila tutti i campi obbligatori (*)." });
+    return;
+  }
+  if (validRows.length === 0) {
+    renderRegistrati({ type: "msg-error", text: "Aggiungi almeno uno strumento alla composizione della band." });
+    return;
+  }
+
+  const payload = {
+    action: "createBand",
+    nomeBand, genere,
+    composizione: JSON.stringify(validRows),
+    linkVideo,
+    primaVolta,
+    referenteNome,
+    referenteTelefono
+  };
+
+  postAction(payload);
+  instrumentRows = [];
+
+  const app = document.getElementById("app");
+  app.innerHTML = `<div class="msg msg-success">Band registrata! Aggiornamento anagrafica in corso…</div>`;
+  setTimeout(async () => {
+    await fetchAll();
+    renderRegistrati({ type: "msg-success", text: `"${escapeHTML(nomeBand)}" è stata registrata con successo. Ora puoi darle disponibilità nella sezione "Suona al CPPT".` });
+  }, 700);
+}
+
+/* =========================================================
+   VIEW: SUONA AL CPPT
+   ========================================================= */
+function renderSuona(message) {
+  const app = document.getElementById("app");
+
+  if (!STATE.dates.length) {
+    app.innerHTML = `
+      <h2 class="section-title">Suona al CPPT</h2>
+      <div class="msg msg-info">Nessuna data disponibile al momento.</div>
+    `;
+    return;
+  }
+
+  if (!STATE.bands.length) {
+    app.innerHTML = `
+      <h2 class="section-title">Suona al CPPT</h2>
+      <div class="msg msg-info">Nessuna band registrata. Vai prima su <a href="#/registrati">Registra la tua Band</a>.</div>
+    `;
+    return;
+  }
+
+  const sortedDates = [...STATE.dates].sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  const bandOptions = STATE.bands
+    .slice()
+    .sort((a, b) => String(a.nomeBand).localeCompare(String(b.nomeBand)))
+    .map(b => `<option value="${escapeHTML(b.id)}">${escapeHTML(b.nomeBand)}</option>`).join("");
+
+  app.innerHTML = `
+    <h2 class="section-title">Suona al CPPT</h2>
+    <p class="section-sub">Seleziona la tua band e spunta le date in cui vuoi suonare. Salvando, la selezione sostituisce quella precedente.</p>
+    ${message ? `<div class="msg ${message.type}">${message.text}</div>` : ""}
+    <div class="card">
+      <div class="field">
+        <label for="bandSelect">La tua Band *</label>
+        <select id="bandSelect">
+          <option value="">— Seleziona la tua band —</option>
+          ${bandOptions}
+        </select>
+      </div>
+      <div id="ticketsWrap"></div>
+      <button type="button" class="btn btn-primary" id="saveSignupsBtn" disabled>Salva le mie presenze</button>
+    </div>
+  `;
+
+  const ticketsWrap = document.getElementById("ticketsWrap");
+  const saveBtn = document.getElementById("saveSignupsBtn");
+  let selectedDates = new Set();
+
+  function renderTickets(bandId) {
+    const existing = new Set(
+      STATE.signups.filter(s => String(s.bandId) === String(bandId)).map(s => String(s.data))
+    );
+    selectedDates = new Set(existing);
+
+    ticketsWrap.innerHTML = `
+      <div class="ticket-list">
+        ${sortedDates.map(d => {
+          const checked = existing.has(String(d.data));
+          return `
+            <div class="ticket ${checked ? "checked" : ""}" data-date="${escapeHTML(d.data)}">
+              <input type="checkbox" ${checked ? "checked" : ""}>
+              <div class="ticket-date">${escapeHTML(formatDataLabel(d.data))}</div>
+              ${d.note ? `<div class="ticket-note">${escapeHTML(d.note)}</div>` : ""}
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+
+    ticketsWrap.querySelectorAll(".ticket").forEach(t => {
+      const dateVal = t.dataset.date;
+      const cb = t.querySelector("input");
+      const toggle = () => {
+        cb.checked = !cb.checked;
+        t.classList.toggle("checked", cb.checked);
+        if (cb.checked) selectedDates.add(dateVal); else selectedDates.delete(dateVal);
+      };
+      t.addEventListener("click", (ev) => {
+        if (ev.target === cb) {
+          t.classList.toggle("checked", cb.checked);
+          if (cb.checked) selectedDates.add(dateVal); else selectedDates.delete(dateVal);
+        } else {
+          toggle();
+        }
+      });
+    });
+  }
+
+  document.getElementById("bandSelect").addEventListener("change", e => {
+    const bandId = e.target.value;
+    saveBtn.disabled = !bandId;
+    if (bandId) {
+      renderTickets(bandId);
+    } else {
+      ticketsWrap.innerHTML = "";
+    }
+  });
+
+  saveBtn.addEventListener("click", () => {
+    const bandId = document.getElementById("bandSelect").value;
+    const band = STATE.bands.find(b => String(b.id) === String(bandId));
+    if (!band) return;
+
+    postAction({
+      action: "setSignups",
+      bandId: band.id,
+      bandNome: band.nomeBand,
+      dateIds: Array.from(selectedDates)
+    });
+
+    app.innerHTML = `<div class="msg msg-success">Presenze salvate! Aggiornamento in corso…</div>`;
+    setTimeout(async () => {
+      await fetchAll();
+      renderSuona({ type: "msg-success", text: `Presenze di "${escapeHTML(band.nomeBand)}" aggiornate.` });
+    }, 700);
+  });
+}
+
+/* =========================================================
+   VIEW: ORGANIZER
+   ========================================================= */
+function renderOrganizer() {
+  const app = document.getElementById("app");
+
+  if (!STATE.dates.length) {
+    app.innerHTML = `
+      <h2 class="section-title">Organizer</h2>
+      <div class="msg msg-info">Nessuna data disponibile al momento.</div>
+    `;
+    return;
+  }
+
+  const sortedDates = [...STATE.dates].sort((a, b) => String(a.data).localeCompare(String(b.data)));
+
+  const bandNamesInSignups = Array.from(new Set(STATE.signups.map(s => s.bandNome))).sort((a, b) => String(a).localeCompare(String(b)));
+
+  const matrix = bandNamesInSignups.map(bandNome => {
+    const bandSignups = new Set(STATE.signups.filter(s => s.bandNome === bandNome).map(s => String(s.data)));
+    return { bandNome, cells: sortedDates.map(d => bandSignups.has(String(d.data))) };
+  });
+
+  app.innerHTML = `
+    <h2 class="section-title">Organizer</h2>
+    <p class="section-sub">Quadro delle adesioni: band sulle righe, date di concerto sulle colonne.</p>
+    ${!matrix.length ? `<div class="msg msg-info">Nessuna band si è ancora segnata per una data.</div>` : `
+      <div class="table-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Band</th>
+              ${sortedDates.map(d => `<th>${escapeHTML(formatDataLabel(d.data))}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${matrix.map(row => `
+              <tr>
+                <td>${escapeHTML(row.bandNome)}</td>
+                ${row.cells.map(c => `<td>${c ? '<span class="tick">✓</span>' : ""}</td>`).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `}
+  `;
+}
+
+/* =========================================================
+   VIEW: INFO
+   ========================================================= */
+function renderInfo() {
+  const app = document.getElementById("app");
+  // Contenuti modificabili direttamente qui sotto.
+  app.innerHTML = `
+    <h2 class="section-title">Informazioni</h2>
+    <p class="section-sub">Tutto quello che serve sapere prima di suonare al CPPT.</p>
+    <div class="info-grid">
+      <div class="card">
+        <h3>L'iniziativa</h3>
+        <ul>
+          <li><strong>Cos'è:</strong> le serate concerto del circolo dedicate alle band emergenti e non del territorio.</li>
+          <li><strong>Orario di apertura porte:</strong> 20:30</li>
+          <li><strong>Inizio concerti:</strong> 21:30</li>
+          <li><strong>Durata set:</strong> indicativamente 30-40 minuti per band</li>
+          <li><strong>Modalità di adesione:</strong> registra la tua band e segnala la tua disponibilità dalla sezione "Suona al CPPT"; le date sono pubblicate dal circolo con congruo anticipo.</li>
+          <li><strong>Conferma:</strong> l'organizzazione ricontatta il referente indicato in fase di iscrizione per confermare data e orario definitivo.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Logistica</h3>
+        <ul>
+          <li><strong>Backline disponibile:</strong> batteria acustica completa, 2 amplificatori chitarra, 1 amplificatore basso, service audio con mixer e microfoni.</li>
+          <li><strong>Cosa portare:</strong> strumenti personali, pedaliere, cavi e bacchette; il resto è fornito dal circolo salvo diverso accordo.</li>
+          <li><strong>Soundcheck:</strong> a partire da un'ora prima dell'apertura porte, secondo l'ordine di scaletta comunicato.</li>
+          <li><strong>Parcheggio:</strong> disponibile nel piazzale del circolo e lungo le vie limitrofe.</li>
+          <li><strong>Carico/scarico strumenti:</strong> accesso carrabile sul retro della sala concerti.</li>
+          <li><strong>Contatti:</strong> per dubbi logistici contattare l'organizzazione tramite il referente indicato nella locandina dell'evento.</li>
+        </ul>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
