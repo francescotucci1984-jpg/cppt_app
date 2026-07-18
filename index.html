@@ -254,6 +254,7 @@ const INSTRUMENTS = [
    ========================================================= */
 let STATE = { bands: [], dates: [], signups: [], loaded: false };
 let instrumentRows = []; // per il form di registrazione: [{strumento, numero}]
+let pendingHomeMessage = null; // messaggio da mostrare una tantum in Home dopo un redirect
 
 /* =========================================================
    UTILITY
@@ -358,11 +359,14 @@ window.addEventListener("load", () => {
    ========================================================= */
 function renderHome() {
   const app = document.getElementById("app");
+  const msg = pendingHomeMessage;
+  pendingHomeMessage = null;
   app.innerHTML = `
     <div class="hero">
       <h1>Suona al CPPT</h1>
       <p>La piattaforma del circolo per gestire l'adesione delle band alle serate di concerto: registra la tua band, dai la disponibilità per le date in programma, e guarda il quadro generale delle serate.</p>
     </div>
+    ${msg ? `<div class="msg ${msg.type}">${msg.text}</div>` : ""}
     <div class="grid-cards">
       <a class="nav-card" href="#/registrati">
         <h3>Registra la tua Band</h3>
@@ -527,10 +531,10 @@ function onSubmitBand(e) {
   instrumentRows = [];
 
   const app = document.getElementById("app");
-  app.innerHTML = `<div class="msg msg-success">Band registrata! Aggiornamento anagrafica in corso…</div>`;
+  app.innerHTML = `<div class="msg msg-success">Band registrata! Aggiornamento in corso…</div>`;
   setTimeout(async () => {
-    await fetchAll();
-    renderRegistrati({ type: "msg-success", text: `"${escapeHTML(nomeBand)}" è stata registrata con successo. Ora puoi darle disponibilità nella sezione "Suona al CPPT".` });
+    pendingHomeMessage = { type: "msg-success", text: `"${escapeHTML(nomeBand)}" è stata registrata con successo. Ora puoi darle disponibilità nella sezione "Suona al CPPT".` };
+    location.hash = "#/home";
   }, 700);
 }
 
